@@ -27,4 +27,4 @@ python app.py
 * GET     /product/:id
 * POST    /product
 * PUT     /product/:id
-* DELETE  /product/:id
+* DELETE  /product/:id# heroku_api
