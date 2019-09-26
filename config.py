@@ -1,2 +1,2 @@
-username = "xy"
-password = "abcd"
+local_postgres = 'postgresql://postgres:salasana@localhost/lexus'
+hero_postgres = 'postgres://kcwmtjrmzmkcey:1fb81269826390d0d9099517b36d524262d0ea520935bb39da8edadd165cd058@ec2-174-129-27-3.compute-1.amazonaws.com:5432/dd5or11l3n7id7'
