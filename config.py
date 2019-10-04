@@ -1,2 +1,4 @@
 local_postgres = 'postgresql://postgres:salasana@localhost/lexus'
-hero_postgres = 'postgres://zncmftgwwqmwuy:f3fb57ed7ec007950c3772037ddbb7a63b00309dd999e033a43693e00127191a@ec2-107-20-168-237.compute-1.amazonaws.com:5432/d7ai9so3aej6o7'
+hero_postgres = 'postgres://'
+api_key = HMia1019
+mac_address = 6c:rf:7f:2b:0e:g8
