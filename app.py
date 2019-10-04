@@ -1,14 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, abort
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow 
 import os
 import config
+from datetime import datetime
+from pytz import timezone
 
 # Init app
 app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True
@@ -23,45 +25,51 @@ db = SQLAlchemy(app)
 # Init ma
 ma = Marshmallow(app)
 
-# Product Class/Model
-class Product(db.Model):
-  __tablename__ = 'product'
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
-  description = db.Column(db.String(200))
-  price = db.Column(db.Float)
-  qty = db.Column(db.Integer)
+# Current time
+def time_now():
+  return datetime.now(timezone('Europe/Helsinki'))
 
-  def __init__(self, name, description, price, qty):
-    self.name = name
-    self.description = description
-    self.price = price
-    self.qty = qty
+# Product Class/Model
+class TempHum(db.Model):
+  __tablename__ = 'temp_hum'
+  id = db.Column(db.Integer, primary_key=True)
+  timestamp = db.Column(db.DateTime(timezone=True))
+  #description = db.Column(db.String(200))
+  temp = db.Column(db.Float)
+  hum = db.Column(db.Integer)
+
+  def __init__(self, timestamp, temp, hum):
+    self.timestamp = timestamp
+    self.temp = temp
+    self.hum = hum
 
 # Product Schema
-class ProductSchema(ma.Schema):
+class ThSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'description', 'price', 'qty')
+    fields = ('id', 'timestamp', 'temp', 'hum')
 
 # Init schema
-product_schema = ProductSchema()
-products_schema = ProductSchema(many=True)
+th_schema = ThSchema()
+#products_schema = ProductSchema(many=True)
 
-# Create a Product
-@app.route('/product', methods=['POST'])
-def add_product():
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
+# Create a row in db
+@app.route('/update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>', methods=['GET','POST'])
+def update(api_key, mac, temp, hum):
+  
+  if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
+      t = datetime.now(timezone('Europe/Helsinki'))
+      #date_time_str = t.isoformat()
+      new_temp_hum = TempHum(t, temp, hum)
 
-  new_product = Product(name, description, price, qty)
+      #db.session.add(new_temp_hum)
+      #db.session.commit()
 
-  db.session.add(new_product)
-  db.session.commit()
+      return th_schema.jsonify(new_temp_hum)
 
-  return product_schema.jsonify(new_product)
-
+  else:
+      abort(401, description="Your are not authorized to update db")
+  
+  
 # Get All Products
 @app.route('/product', methods=['GET'])
 def get_products():
@@ -102,6 +110,17 @@ def delete_product(id):
   db.session.commit()
 
   return product_schema.jsonify(product)
+
+@app.route("/show/API_key=<api_key>/mac=<mac>/field=<int:field>/data=<data>", methods=['GET'])
+def write_data_point(api_key, mac, field, data):
+    if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
+        t = datetime.now(timezone('Europe/Helsinki'))
+        date_time_str = t.isoformat()
+
+        return render_template("showrecent.html", data=data, time_stamp=date_time_str)
+
+    else:
+        return "403"
 
 # Run Server
 if __name__ == '__main__':
