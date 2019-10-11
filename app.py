@@ -63,7 +63,7 @@ def index():
     #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
 
     return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, 
-                            timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%I:%M:%S %p   %b %d, %Y'))
+                            timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%H:%M:%S   %d.%m, %Y'))
 
 # Create a row in db
 @app.route('/update', methods=['POST'])
