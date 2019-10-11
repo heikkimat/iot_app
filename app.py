@@ -4,6 +4,7 @@ from flask_marshmallow import Marshmallow
 import os
 import config
 from datetime import datetime
+import pytz
 from pytz import timezone
 
 # Init app
@@ -55,23 +56,21 @@ th_schema = ThSchema()
 # Show recent db entry
 @app.route("/")
 def index():
-    temphum = TempHum.query.get(1)
-    return th_schema.jsonify(temphum)
+    temphum = TempHum.query.order_by(TempHum.id.desc()).first_or_404()
+    #return th_schema.jsonify(temphum)
 
-    data1 = str(float(row1[0]))
-    data2 = str(float(row2[0]))
-    time_str1 = row1[1]
-    t1 = dateutil.parser.parse(time_str1)
-    t_pst1 = t1.astimezone(pytz.timezone('Europe/Helsinki'))
-    time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
+    #t_pst1 = t.astimezone(pytz.timezone('Europe/Helsinki'))
+    #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
 
-    return render_template("showdoubletemp.html", data1=data1, data2=data2, time_stamp1=time_stamp1)
+    return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, 
+                            timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%I:%M:%S %p   %b %d, %Y'))
 
 # Create a row in db
-@app.route('/update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>', methods=['GET','POST'])
+@app.route('/update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>', methods=['POST'])
 def update(api_key, mac, temp, hum):
-  
+  # check if the api key and mac address are correct
   if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
+    try:
       t = datetime.now(timezone('Europe/Helsinki'))
       #date_time_str = t.isoformat()
       new_temp_hum = TempHum(t, temp, hum)
@@ -80,59 +79,20 @@ def update(api_key, mac, temp, hum):
       db.session.commit()
 
       return th_schema.jsonify(new_temp_hum)
-
+    except: #when temp or hum is not numeric
+      abort(400, 'Check the parameters')
   else:
       abort(401, description="Your are not authorized to update db")
-  
-  
-# Get All Products
-@app.route('/product', methods=['GET'])
-def get_products():
-  all_products = Product.query.all()
-  result = products_schema.dump(all_products)
-  return jsonify(result)
 
-# Get Single Products
-@app.route('/product/<id>', methods=['GET'])
-def get_product(id):
-  product = Product.query.get(id)
-  return product_schema.jsonify(product)
-
-# Update a Product
-@app.route('/product/<id>', methods=['PUT'])
-def update_product(id):
-  product = Product.query.get(id)
-
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
-
-  product.name = name
-  product.description = description
-  product.price = price
-  product.qty = qty
-
-  db.session.commit()
-
-  return product_schema.jsonify(product)
-
-# Delete Product
-@app.route('/product/<id>', methods=['DELETE'])
-def delete_product(id):
-  product = Product.query.get(id)
-  db.session.delete(product)
-  db.session.commit()
-
-  return product_schema.jsonify(product)
-
-@app.route("/show/API_key=<api_key>/mac=<mac>/field=<int:field>/data=<data>", methods=['GET'])
-def write_data_point(api_key, mac, field, data):
+#testing REST
+@app.route("/show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>", methods=['GET'])
+def write_data_point(api_key, mac, temp, hum):
     if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
         t = datetime.now(timezone('Europe/Helsinki'))
-        date_time_str = t.isoformat()
+        #date_time_str = t.isoformat()
 
-        return render_template("showrecent.html", data=data, time_stamp=date_time_str)
+        return render_template("showtemphum.html", data1=temp, data2=hum, timestamp=t.strftime('%I:%M:%S %p   %b %d, %Y'))
+
 
     else:
         return "403"
