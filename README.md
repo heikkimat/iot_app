@@ -23,8 +23,6 @@ python app.py
 
 ## Endpoints
 
-* GET     /product
-* GET     /product/:id
-* POST    /product
-* PUT     /product/:id
-* DELETE  /product/:id# heroku_api
+* GET     /update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
+* POST     /update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
+

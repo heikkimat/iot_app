@@ -36,7 +36,7 @@ class TempHum(db.Model):
   timestamp = db.Column(db.DateTime(timezone=True))
   #description = db.Column(db.String(200))
   temp = db.Column(db.Float)
-  hum = db.Column(db.Integer)
+  hum = db.Column(db.Float)
 
   def __init__(self, timestamp, temp, hum):
     self.timestamp = timestamp
@@ -52,6 +52,21 @@ class ThSchema(ma.Schema):
 th_schema = ThSchema()
 #products_schema = ProductSchema(many=True)
 
+# Show recent db entry
+@app.route("/")
+def index():
+    temphum = TempHum.query.get(1)
+    return th_schema.jsonify(temphum)
+
+    data1 = str(float(row1[0]))
+    data2 = str(float(row2[0]))
+    time_str1 = row1[1]
+    t1 = dateutil.parser.parse(time_str1)
+    t_pst1 = t1.astimezone(pytz.timezone('Europe/Helsinki'))
+    time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
+
+    return render_template("showdoubletemp.html", data1=data1, data2=data2, time_stamp1=time_stamp1)
+
 # Create a row in db
 @app.route('/update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>', methods=['GET','POST'])
 def update(api_key, mac, temp, hum):
@@ -61,8 +76,8 @@ def update(api_key, mac, temp, hum):
       #date_time_str = t.isoformat()
       new_temp_hum = TempHum(t, temp, hum)
 
-      #db.session.add(new_temp_hum)
-      #db.session.commit()
+      db.session.add(new_temp_hum)
+      db.session.commit()
 
       return th_schema.jsonify(new_temp_hum)
 
