@@ -73,13 +73,14 @@ def update():
   api_key = request.form['api_key']
   mac = request.form['mac']
   temp = request.form['temp']
+  temp2 = request.form['temp2']
   hum = request.form['hum']
   # check if the api key and mac address are correct
   if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
     try:
       t = datetime.now(timezone('Europe/Helsinki'))
       #date_time_str = t.isoformat()
-      new_temp_hum = TempHum(t, temp, hum)
+      new_temp_hum = TempHum(t, temp, temp2, hum)
 
       db.session.add(new_temp_hum)
       db.session.commit()
@@ -89,7 +90,7 @@ def update():
       abort(400, 'Check the parameters')
   else:
       abort(401, description="Your are not authorized to update db")
-
+""" 
 #testing REST
 @app.route("/show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>", methods=['GET'])
 def write_data_point(api_key, mac, temp, hum):
@@ -103,6 +104,7 @@ def write_data_point(api_key, mac, temp, hum):
     else:
         return "403"
 
-# Run Server
+ """
+ # Run Server
 if __name__ == '__main__':
   app.run()
