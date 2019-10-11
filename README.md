@@ -25,6 +25,6 @@ python app.py
 
 * GET     /show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
 * POST     /update
-    Content-Type: application/x-www-form-urlencoded
-    Body: api_key=API_KEY&mac=MAC_ADDRESS&temp=20&hum=100
+   * Content-Type: application/x-www-form-urlencoded
+   * Body: api_key=API_KEY&mac=MAC_ADDRESS&temp=20&hum=100
 
