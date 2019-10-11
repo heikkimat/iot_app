@@ -66,8 +66,12 @@ def index():
                             timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%I:%M:%S %p   %b %d, %Y'))
 
 # Create a row in db
-@app.route('/update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>', methods=['POST'])
-def update(api_key, mac, temp, hum):
+@app.route('/update', methods=['POST'])
+def update():
+  api_key = request.form['api_key']
+  mac = request.form['mac']
+  temp = request.form['temp']
+  hum = request.form['hum']
   # check if the api key and mac address are correct
   if (api_key == 'API_KEY' and mac == 'MAC_ADDRESS'):
     try:

@@ -23,6 +23,8 @@ python app.py
 
 ## Endpoints
 
-* GET     /update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
-* POST     /update/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
+* GET     /show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>
+* POST     /update
+    Content-Type: application/x-www-form-urlencoded
+    Body: api_key=API_KEY&mac=MAC_ADDRESS&temp=20&hum=100
 
