@@ -32,22 +32,24 @@ def time_now():
 
 # Product Class/Model
 class TempHum(db.Model):
-  __tablename__ = 'temp_hum'
+  __tablename__ = 'temp2_hum'
   id = db.Column(db.Integer, primary_key=True)
   timestamp = db.Column(db.DateTime(timezone=True))
   #description = db.Column(db.String(200))
   temp = db.Column(db.Float)
+  temp2 = db.Column(db.Float)
   hum = db.Column(db.Float)
 
-  def __init__(self, timestamp, temp, hum):
+  def __init__(self, timestamp, temp, temp2, hum):
     self.timestamp = timestamp
     self.temp = temp
+    self.temp2 = temp2
     self.hum = hum
 
 # Product Schema
 class ThSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'timestamp', 'temp', 'hum')
+    fields = ('id', 'timestamp', 'temp', 'temp2', 'hum')
 
 # Init schema
 th_schema = ThSchema()
