@@ -62,7 +62,7 @@ def index():
     #t_pst1 = t.astimezone(pytz.timezone('Europe/Helsinki'))
     #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
 
-    return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, 
+    return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, data3=temphum.temp2, 
                             timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S'))
 
 # Create a row in db
