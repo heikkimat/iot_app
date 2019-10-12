@@ -11,7 +11,7 @@ from pytz import timezone
 app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True
@@ -30,7 +30,7 @@ ma = Marshmallow(app)
 def time_now():
   return datetime.now(timezone('Europe/Helsinki'))
 
-# Product Class/Model
+# IOT data update Class/Model
 class TempHum(db.Model):
   __tablename__ = 'temp2_hum'
   id = db.Column(db.Integer, primary_key=True)
@@ -59,13 +59,11 @@ th_schema = ThSchema()
 @app.route("/")
 def index():
     temphum = TempHum.query.order_by(TempHum.id.desc()).first_or_404()
-    #return th_schema.jsonify(temphum)
-
+    temphum.timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S')
+    return render_template("showtemphum.html", temphum=temphum)
     #t_pst1 = t.astimezone(pytz.timezone('Europe/Helsinki'))
     #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
-
-    return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, data3=temphum.temp2, 
-                            timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S'))
+    #return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, data3=temphum.temp2, timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S'))
 
 # Create a row in db
 @app.route('/update', methods=['POST'])
