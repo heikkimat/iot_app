@@ -1,11 +1,12 @@
-from flask import Flask, request, jsonify, render_template, abort, url_for
+from flask import Flask, request, jsonify, render_template, abort, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow 
 import os
 import config
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from pytz import timezone
+from flask_cors import CORS, cross_origin
 
 # Init app
 app = Flask(__name__)
@@ -25,6 +26,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 # Init ma
 ma = Marshmallow(app)
+
+CORS(app)
 
 # Current time
 def time_now():
@@ -53,17 +56,16 @@ class ThSchema(ma.Schema):
 
 # Init schema
 th_schema = ThSchema()
-#products_schema = ProductSchema(many=True)
+th_schemas = ThSchema(many=True)
 
 # Show recent db entry
 @app.route("/")
 def index():
-    temphum = TempHum.query.order_by(TempHum.id.desc()).first_or_404()
-    temphum.timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S')
-    return render_template("showtemphum.html", temphum=temphum)
-    #t_pst1 = t.astimezone(pytz.timezone('Europe/Helsinki'))
-    #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
-    #return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, data3=temphum.temp2, timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S'))
+  temphum = TempHum.query.order_by(TempHum.id.desc()).all()
+  return render_template("showtemphum.html", temphum=temphum)
+  #t_pst1 = t.astimezone(pytz.timezone('Europe/Helsinki'))
+  #time_stamp1 = t_pst1.strftime('%I:%M:%S %p   %b %d, %Y')
+  #return render_template("showtemphum.html", data1=temphum.temp, data2=temphum.hum, data3=temphum.temp2, timestamp=temphum.timestamp.astimezone(pytz.timezone('Europe/Helsinki')).strftime('%d.%m.%Y  -  %H:%M:%S'))
 
 # Create a row in db
 @app.route('/update', methods=['POST'])
@@ -88,6 +90,14 @@ def update():
       abort(400, 'Check the parameters')
   else:
       abort(401, description="Your are not authorized to update db")
+
+#data fetched by app.js
+@app.route("/data", methods=['GET','POST'])
+def data():
+  today = datetime.now(timezone('Europe/Helsinki'))
+  today = today.replace(hour=0, minute=0, second=0, microsecond=0)
+  temp_hum = TempHum.query.filter(TempHum.timestamp >= today).order_by(TempHum.id.asc()).all()
+  return th_schemas.jsonify(temp_hum)
 """ 
 #testing REST
 @app.route("/show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>", methods=['GET'])

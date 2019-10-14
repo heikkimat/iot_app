@@ -15,6 +15,7 @@ psycopg2 = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 pytz = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"
