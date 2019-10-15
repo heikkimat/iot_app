@@ -11,11 +11,23 @@ return response.json();
     var temp = [];
     var hum = [];
     var temp2 = [];
+    var temp_max =-101.1;
+    var temp_min = 101.1;
+    var hum_max =-101.1;
+    var hum_min = 101.1;
+    var temp2_max =-101.1;
+    var temp2_min = 101.1;
     for(var i=0; i < data.length; i++) {
-    timestamp.push(data[i].timestamp);
-    temp.push(data[i].temp);
-    hum.push(data[i].hum);
-    temp2.push(data[i].temp2);
+      timestamp.push(data[i].timestamp);
+      temp.push(data[i].temp);
+      hum.push(data[i].hum);
+      temp2.push(data[i].temp2);
+      if(data[i].temp > temp_max) temp_max = data[i].temp;
+      if(data[i].temp < temp_min) temp_min = data[i].temp;
+      if(data[i].hum > hum_max) hum_max = data[i].hum;
+      if(data[i].hum < hum_min) hum_min = data[i].hum;
+      if(data[i].temp2 > temp2_max) temp2_max = data[i].temp2;
+      if(data[i].temp2 < temp2_min) temp2_min = data[i].temp2;
     }
 
     // check if sql query has returned empty array
@@ -45,6 +57,14 @@ return response.json();
         default:
         uni = 'day';
     }
+    //Min and Max
+    document.getElementById("temp_max").innerHTML = "Max: " + Math.round(temp_max*10)/10 + " C";
+    document.getElementById("temp_min").innerHTML = "Min: " + Math.round(temp_min*10)/10 + " C";
+    document.getElementById("hum_max").innerHTML = "Max: " + Math.round(hum_max*10)/10 + " %";
+    document.getElementById("hum_min").innerHTML = "Min: " + Math.round(hum_min*10)/10 + " %";
+    document.getElementById("temp2_max").innerHTML = "Max: " + Math.round(temp2_max*10)/10 + " C";
+    document.getElementById("temp2_min").innerHTML = "Min: " + Math.round(temp2_min*10)/10 + " C";
+
     //charts 
     var ctx = document.getElementById('mixed1').getContext('2d');
     var ctx2 = document.getElementById('chart_hum').getContext('2d');
@@ -52,7 +72,7 @@ return response.json();
     var start = new Date();
     start.setHours(0,0,0,0);
     var end = new Date();
-    end.setHours(23,59,59,999);
+    end.setHours(24,0,0,0);
 
     const LineGraph1 = new Chart(ctx, {
         type: 'line',
@@ -80,32 +100,32 @@ return response.json();
             scales: {
             yAxes: [{
             type: 'linear',
-            ticks: {
+/*             ticks: {
                 suggestedMax: 25,
                 suggestedMin: 15
             }
-            }],
+ */            }],
             xAxes: [{
             type: 'time',
             display: true,
-            scaleLabel: {
-                display: true,
-                labelString: "Aika",
-            },
             time: {
-                unit: uni,
-                displayFormats: {
-                'hour': 'HH:MM',
-                'day': 'MMM DD',
-                'month': 'MMM YYYY'
-                },
-                unitStepSize: 1,
+              minUnit: 'minute',
+              unit: 'minute',
+              displayFormats: {
+                  'minute': 'HH',
+                  'hour': 'HH:MM',
+                  'day': 'MMM DD',
+                  'month': 'MMM YYYY'
+              },
+              unitStepSize: 120,
+              min: start,
+              max: end                        
             },
-            distribution: 'linear'
+            distribution: 'linear',
         }]
         }
         }
-    }); //eof LineGraph1
+  }); //eof LineGraph1
     const LineGraph2 = new Chart(ctx2, {
         type: 'line',
         data: {
@@ -132,11 +152,11 @@ return response.json();
             scales: {
             yAxes: [{
             type: 'linear',
-            ticks: {
+/*             ticks: {
                 suggestedMax: 100,
                 suggestedMin: 0
             }
-            }],
+ */            }],
             xAxes: [{
             type: 'time',
             display: true,
@@ -157,7 +177,7 @@ return response.json();
         }]
         }
         }
-    }); //eof LineGraph3
+    }); //eof LineGraph2
     const LineGraph3 = new Chart(ctx3, {
         type: 'line',
         data: {
@@ -184,27 +204,28 @@ return response.json();
             scales: {
             yAxes: [{
             type: 'linear',
-            ticks: {
+/*             ticks: {
                 suggestedMax: 30,
                 suggestedMin: -30
             }
-            }],
+ */            }],
             xAxes: [{
             type: 'time',
             display: true,
-            scaleLabel: {
-                display: true,
-                labelString: "Aika",
-            },
             time: {
-                unit: uni,
-                displayFormats: {
-                'hour': 'HH:MM',
-                'day': 'MMM DD',
-                'month': 'MMM YYYY'
-                }
+              minUnit: 'minute',
+              unit: 'minute',
+              displayFormats: {
+                  'minute': 'HH',
+                  'hour': 'HH:MM',
+                  'day': 'MMM DD',
+                  'month': 'MMM YYYY'
+              },
+              unitStepSize: 120,
+              min: start,
+              max: end                        
             },
-            distribution: 'linear'
+            distribution: 'linear',
         }]
         }
         }
