@@ -239,8 +239,7 @@ return response.json();
         max: 25,
         title: "Sisälämpötila",
         label: "C",
-        relativeGaugeSize: true,
-        levelColors: ['#0000cd', '#ff0000']
+        relativeGaugeSize: true
     });
     var g2 = new JustGage({
         id: "gauge_hum",
@@ -258,9 +257,7 @@ return response.json();
         max: 30,
         title: "Ulkolämpötila",
         label: "C",
-        relativeGaugeSize: true,
-        levelColors: ['#0000cd', '#ff3b30'],
-        noGradient: true
+        relativeGaugeSize: true
     });
 }) //eof then
 .catch(function (err) {
