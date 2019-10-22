@@ -66,7 +66,7 @@ return response.json();
     document.getElementById("temp2_min").innerHTML = "Min: " + Math.round(temp2_min*10)/10 + " C";
 
     //charts 
-    var ctx = document.getElementById('mixed1').getContext('2d');
+    var ctx = document.getElementById('chart_temp').getContext('2d');
     var ctx2 = document.getElementById('chart_hum').getContext('2d');
     var ctx3 = document.getElementById('chart_temp2').getContext('2d');
     var start = new Date();
@@ -230,6 +230,7 @@ return response.json();
         }
         }
     }); //eof LineGraph3
+
     //Gauges
     var g = new JustGage({
         id: "gauge_temp",
@@ -238,7 +239,8 @@ return response.json();
         max: 25,
         title: "Sisälämpötila",
         label: "C",
-        relativeGaugeSize: true
+        relativeGaugeSize: true,
+        levelColors: ['#0000cd', '#ff0000']
     });
     var g2 = new JustGage({
         id: "gauge_hum",
@@ -256,7 +258,9 @@ return response.json();
         max: 30,
         title: "Ulkolämpötila",
         label: "C",
-        relativeGaugeSize: true
+        relativeGaugeSize: true,
+        levelColors: ['#0000cd', '#ff3b30'],
+        noGradient: true
     });
 }) //eof then
 .catch(function (err) {
