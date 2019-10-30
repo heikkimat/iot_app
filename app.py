@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True
@@ -94,6 +94,8 @@ def update():
 #data fetched by app.js
 @app.route("/data", methods=['GET','POST'])
 def data():
+  req = request.get_json()
+  print(req['range'])
   today = datetime.now(timezone('Europe/Helsinki'))
   today = today.replace(hour=0, minute=0, second=0, microsecond=0)
   temp_hum = TempHum.query.filter(TempHum.timestamp >= today).order_by(TempHum.id.asc()).all()

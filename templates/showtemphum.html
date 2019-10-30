@@ -12,14 +12,35 @@
     </head>
     <body>
         <div class="container-fluid bg-light">
-            <div class="jumbotron text-center mb-2">
-                <h1><span class="fas fa-chess-knight mr-3"></span>Onnela</h1>
+            <nav class="navbar navbar-light sticky-top" style="background-color: #e3f2fd;">
+                <span class="navbar-brand mb-0 h1 ">Onnela</span>
+                <div class="navbar-nav text-right">
+                        <select id="list" onchange="getSelectValue();">
+                            <option id="1" value="1">Tämä vuorokausi</option>
+                            <option id="7" value="7">Tämä viikko</option>
+                            <option id="30" value="30">Tämä kuukausi</option>
+                            <option id="365" value="365">Tämä vuosi</option>
+                        </select>
+                    </div>
+            </nav>
+
+            <div class="row border-top mt-2 pt-2" >
+                <div id="gauge_temp2" class="col-md-4   mb-2"></div>
+                <div class="col-md-1 ml-md-n5 mr-md-0 d-md-block mb-4 text-center">
+                    <p id="temp2_max" class="text-nowrap small text-danger d-inline ">Max: ...</p>
+                    <p id="temp2_min" class="text-nowrap small text-primary d-inline ">Min: ...</p>
+                </div>
+                <div class="col-md-7">
+                    <canvas id="chart_temp2" width="800" height="300"></canvas>
+                </div>
             </div>
             <div class="row border-top pt-2" >
                 <div id="gauge_temp" class="col-md-4 mb-2"></div>
                 <div class="col-md-1 ml-md-n5 mr-md-0 d-md-block mb-4 text-center">
-                    <p id="temp_max" class="text-nowrap small text-danger d-inline d-md-block "><span class="fas fa-long-arrow-alt-up"></span></p>
-                    <p id="temp_min" class="text-nowrap small text-primary d-inline d-md-block "><span class="fas fa-long-arrow-alt-down"></span></p>
+                    <!-- <p id="temp_max" class="text-nowrap small text-danger d-inline d-md-block "><span class="fas fa-long-arrow-alt-up"></span></p> -->
+                    <!-- <p id="temp_min" class="text-nowrap small text-primary d-inline d-md-block "><span class="fas fa-long-arrow-alt-down"></span></p> -->
+                    <p id="temp_max" class="text-nowrap small text-danger d-inline ">Max: ...</p>
+                    <p id="temp_min" class="text-nowrap small text-primary d-inline ">Min: ...</p>
                 </div>
                 <div class="col-md-7">
                     <canvas id="chart_temp" width="800" height="300"></canvas>
@@ -33,16 +54,6 @@
                 </div>
                 <div class="col-md-7">
                     <canvas id="chart_hum" width="800" height="300"></canvas>
-                </div>
-            </div>
-            <div class="row border-top pt-2" >
-                <div id="gauge_temp2" class="col-md-4   mb-2"></div>
-                <div class="col-md-1 ml-md-n5 mr-md-0 d-md-block mb-4 text-center">
-                    <p id="temp2_max" class="text-nowrap small text-danger d-inline ">Max: ...</p>
-                    <p id="temp2_min" class="text-nowrap small text-primary d-inline ">Min: ...</p>
-                </div>
-                <div class="col-md-7">
-                    <canvas id="chart_temp2" width="800" height="300"></canvas>
                 </div>
             </div>
         </div>

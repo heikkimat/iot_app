@@ -1,6 +1,16 @@
 'use strict'
-
-fetch('/data')
+const r = 1;
+const options = {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json;charset=UTF-8'
+  },
+  body: JSON.stringify({
+    range: r
+  })
+};
+fetch('/data', options)
 .then(function (response) {
 return response.json();
 })
@@ -33,7 +43,7 @@ return response.json();
     // check if sql query has returned empty array
     if(timestamp.length == 0){
         console.log("ei mittaustuloksia");
-        const chrts = ["#temp","#hum","#temp2"];
+        const chrts = ["#chart_temp","#chart_hum","#chart_temp2"];
         chrts.forEach(function(element){
         var canvas = $(element).get(0); //document.getElementById("temp1");
         var ctx = canvas.getContext("2d");
@@ -264,3 +274,10 @@ return response.json();
 // There was an error
 console.warn('Something went wrong.', err);
 });
+
+// gets value from dropdown list
+function getSelectValue(){
+  var selectedValue2 = document.getElementById("list").value;
+  //piirra(selectedValue, null, null);
+  console.log(selectedValue2);
+}
