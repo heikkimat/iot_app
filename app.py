@@ -95,10 +95,16 @@ def update():
 @app.route("/data", methods=['GET','POST'])
 def data():
   req = request.get_json()
-  print(req['range'])
-  today = datetime.now(timezone('Europe/Helsinki'))
-  today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-  temp_hum = TempHum.query.filter(TempHum.timestamp >= today).order_by(TempHum.id.asc()).all()
+  range = (req['range'])
+  print(range)
+  dday = datetime.now(timezone('Europe/Helsinki'))
+  dday = dday.replace(hour=0, minute=0, second=0, microsecond=0)
+  if range == '30':
+    dday = dday.replace(day=1)
+  elif range == '365':
+    dday = dday.replace(day=1, month=1)
+  print(dday)
+  temp_hum = TempHum.query.filter(TempHum.timestamp >= dday).order_by(TempHum.id.asc()).all()
   return th_schemas.jsonify(temp_hum)
 """ 
 #testing REST
