@@ -96,16 +96,37 @@ def update():
 def data():
   req = request.get_json()
   range = (req['range'])
-  print(range)
   dday = datetime.now(timezone('Europe/Helsinki'))
   dday = dday.replace(hour=0, minute=0, second=0, microsecond=0)
   if range == '30':
     dday = dday.replace(day=1)
   elif range == '365':
     dday = dday.replace(day=1, month=1)
-  print(dday)
   temp_hum = TempHum.query.filter(TempHum.timestamp >= dday).order_by(TempHum.id.asc()).all()
   return th_schemas.jsonify(temp_hum)
+
+#clean data in db
+# remove rows where timestamps difference < 1 hour
+@app.route("/clean", methods=['GET'])
+def clean():
+  dday = datetime.now(timezone('Europe/Helsinki'))
+  dday = dday.replace(hour=0, minute=0, second=0, microsecond=0)
+  temp_hum = TempHum.query.filter(TempHum.timestamp < dday).order_by(TempHum.id.asc()).all()
+  timestamp_ref = dday.replace(year=2018) # set reference far enough
+  count = 0
+  try:
+    for row in temp_hum:
+      if (row.timestamp < timestamp_ref+timedelta(hours=1)):
+        db.session.delete(row)
+        count+=1
+      else:
+        timestamp_ref = row.timestamp
+  except:
+    abort(400, 'Cleaning failed')
+  db.session.commit()
+  return  str(count) + " poistettu"
+
+
 """ 
 #testing REST
 @app.route("/show/API_key=<api_key>/mac=<mac>/temp=<temp>/hum=<hum>", methods=['GET'])
