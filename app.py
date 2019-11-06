@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'dev'
+ENV = 'dev'  # dev or prod
 
 if ENV == 'dev':
     app.debug = True
@@ -105,18 +105,19 @@ def data():
   temp_hum = TempHum.query.filter(TempHum.timestamp >= dday).order_by(TempHum.id.asc()).all()
   return th_schemas.jsonify(temp_hum)
 
-#clean data in db
-# remove rows where timestamps difference < 1 hour
+# clean data in db
+# remove rows where timestamps are from last year OR timestamp difference < 1 hour
 @app.route("/clean", methods=['GET'])
 def clean():
   dday = datetime.now(timezone('Europe/Helsinki'))
   dday = dday.replace(hour=0, minute=0, second=0, microsecond=0)
   temp_hum = TempHum.query.filter(TempHum.timestamp < dday).order_by(TempHum.id.asc()).all()
-  timestamp_ref = dday.replace(year=2018) # set reference far enough
+  timestamp_ref_0 = dday.replace(month=1, day=1) # set reference day
+  timestamp_ref = timestamp_ref_0.replace(year=2018) # set reference day far enough
   count = 0
   try:
     for row in temp_hum:
-      if (row.timestamp < timestamp_ref+timedelta(hours=1)):
+      if (row.timestamp < timestamp_ref_0) or (row.timestamp < timestamp_ref+timedelta(hours=1)):
         db.session.delete(row)
         count+=1
       else:
