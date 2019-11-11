@@ -1,2 +1,3 @@
 local_postgres = 'postgresql://postgres:salasana@localhost/lexus'
-hero_postgres = 'postgres://vvpquppeobjuha:95dbf35c13ac823cfa28db1bfeeb2f0ddea2699de664134eecdfb15b58ed0b56@ec2-54-243-44-102.compute-1.amazonaws.com:5432/dccqj76920i04j'
+#hero_postgres = 'postgres://vvpquppeobjuha:95dbf35c13ac823cfa28db1bfeeb2f0ddea2699de664134eecdfb15b58ed0b56@ec2-54-243-44-102.compute-1.amazonaws.com:5432/dccqj76920i04j'
+hero_postgres = 'postgres://unnlqxjdjmlkux:61ebaed5164f614a8cf9f89478442271db03272871386bb6e3b984e8ff1edc32@ec2-174-129-33-120.compute-1.amazonaws.com:5432/deg6qv14aqmoh2'
