@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'dev'  # dev or prod
+ENV = 'prod'  # dev or prod
 
 if ENV == 'dev':
     app.debug = True
