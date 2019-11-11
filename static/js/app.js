@@ -1,5 +1,7 @@
 'use strict'
-
+var LineGraph1;
+var LineGraph2;
+var LineGraph3;
 var g1;
 var g2;
 var g3;
@@ -97,8 +99,9 @@ function piirra(selectedValue){
       var ctx2 = document.getElementById('chart_hum').getContext('2d');
       var ctx3 = document.getElementById('chart_temp2').getContext('2d');
      
-
-      const LineGraph1 = new Chart(ctx1, {
+      if(LineGraph1 != undefined) 
+        LineGraph1.destroy(); 
+      LineGraph1 = new Chart(ctx1, {
           type: 'line',
           data: {
           labels: timestamp,
@@ -149,8 +152,10 @@ function piirra(selectedValue){
           }]
           }
           }
-    }); //eof LineGraph1
-      const LineGraph2 = new Chart(ctx2, {
+      }); //eof LineGraph1
+      if(LineGraph2 != undefined) 
+      LineGraph2.destroy(); 
+      LineGraph2 = new Chart(ctx2, {
           type: 'line',
           data: {
           labels: timestamp,
@@ -202,7 +207,9 @@ function piirra(selectedValue){
           }
           }
       }); //eof LineGraph2
-      const LineGraph3 = new Chart(ctx3, {
+      if(LineGraph3 != undefined) 
+      LineGraph3.destroy(); 
+      LineGraph3 = new Chart(ctx3, {
           type: 'line',
           data: {
           labels: timestamp,
@@ -282,7 +289,9 @@ function piirra(selectedValue){
             max: 30,
             title: "Ulkolämpötila",
             label: "C",
-            relativeGaugeSize: true
+            relativeGaugeSize: true,
+            levelColors : [  "#3498DB",  "#E74C3C" ],
+            levelColorsGradient: false
         });
       } else {
         g1.refresh(temp[temp.length-1]);
